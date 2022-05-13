@@ -1,5 +1,5 @@
 import abc
 
 
-def abcABC(x):
+def abcABC(x: int) -> None:
     x += 1
