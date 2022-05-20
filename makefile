@@ -30,7 +30,7 @@ freeze:
 
 .PHONY: deps-dev
 deps-dev:
-	$(PYTHON) -m pip install --upgrade pip install -r requirements-dev.txt
+	$(PYTHON) -m pip install --upgrade pip -r requirements-dev.txt
 
 .PHONY: freeze-dev
 freeze-dev:
