@@ -27,3 +27,10 @@ jobs:
     - name: Analysing the code with pylint
       run: |
         pylint src
+  lint:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check formatting with black
+        run: |
+          black --check src
