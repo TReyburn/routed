@@ -1,5 +1,4 @@
 """Simple Travelling Salesperson Problem (TSP) between cities."""
-import typing
 from dataclasses import dataclass
 
 from ortools.constraint_solver import pywrapcp, routing_enums_pb2  # type: ignore
@@ -69,11 +68,11 @@ def main() -> None:
     # Create Routing Model.
     routing = pywrapcp.RoutingModel(manager)
 
-    def distance_callback(from_index: int, to_index: int) -> typing.Any:
+    def distance_callback(from_index: int, to_index: int) -> int:
         """Returns the distance between the two nodes."""
         # Convert from routing variable Index to distance matrix NodeIndex.
-        from_node = manager.IndexToNode(from_index)
-        to_node = manager.IndexToNode(to_index)
+        from_node: int = manager.IndexToNode(from_index)
+        to_node: int = manager.IndexToNode(to_index)
         return data.distance_matrix[from_node][to_node]
 
     transit_callback_index = routing.RegisterTransitCallback(distance_callback)
