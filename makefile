@@ -19,7 +19,7 @@ setup: clean venv deps
 setup-dev: clean create-venv deps-dev
 
 
-## handling dependencies
+# handling dependencies
 .PHONY: deps
 deps:
 	$(PYTHON) -m pip install --upgrade pip -r requirements.txt
@@ -30,14 +30,14 @@ freeze:
 
 .PHONY: deps-dev
 deps-dev:
-	$(PYTHON) -m pip install --upgrade pip install -r requirements-dev.txt
+	$(PYTHON) -m pip install --upgrade pip -r requirements-dev.txt
 
 .PHONY: freeze-dev
 freeze-dev:
 	$(PYTHON) -m pip freeze > requirements-dev.txt
 
 
-## lint
+# lint
 .PHONY: black
 black:
 	$(PYTHON) -m black ./src
@@ -55,13 +55,13 @@ pylint:
 	$(PYTHON) -m pylint ./src
 
 
-## test
+# test
 .PHONY: test
 test:
 	echo "forgot to implement testing"
 
 
-## handling environment
+# handling environment
 .PHONY: clean
 clean:
 	rm -rf ./venv
