@@ -5,15 +5,23 @@ from ortools.constraint_solver import pywrapcp, routing_enums_pb2  # type: ignor
 
 
 @dataclass
-class DataModel:
-    """DataModel"""
+class InputDataModel:
+    """InputDataModel"""
 
     distance_matrix: list[list[int]]
     num_vehicles: int
     depot: int
 
 
-def create_data_model() -> DataModel:
+@dataclass
+class OutputDataModel:
+    """OutputDataModel"""
+
+    path: list[int]
+    distance: int
+
+
+def create_data_model() -> InputDataModel:
     """Stores the data for the problem."""
     distance_matrix = [
         [0, 2451, 713, 1018, 1631, 1374, 2408, 213, 2571, 875, 1420, 2145, 1972],
@@ -30,29 +38,43 @@ def create_data_model() -> DataModel:
         [2145, 357, 1453, 1280, 586, 887, 1114, 2300, 653, 1272, 1017, 0, 504],
         [1972, 579, 1260, 987, 371, 999, 701, 2099, 600, 1162, 1200, 504, 0],
     ]
-    num_vehicles = 1
+    num_vehicles = 4
     depot = 0
-    return DataModel(distance_matrix, num_vehicles, depot)
+    return InputDataModel(distance_matrix, num_vehicles, depot)
 
 
 def print_solution(
     manager: pywrapcp.RoutingIndexManager,
     routing: pywrapcp.RoutingModel,
     solution: pywrapcp.RoutingModel,
+    num_vehicles: int,
 ) -> None:
     """Prints solution on console."""
     print(f"Objective: {solution.ObjectiveValue()} miles")
-    index = routing.Start(0)
-    plan_output = "Route for vehicle 0:\n"
-    route_distance = 0
-    while not routing.IsEnd(index):
-        plan_output += f" {manager.IndexToNode(index)} ->"
-        previous_index = index
-        index = solution.Value(routing.NextVar(index))
-        route_distance += routing.GetArcCostForVehicle(previous_index, index, 0)
-    plan_output += f" {manager.IndexToNode(index)}\n"
-    plan_output += f"Route distance: {route_distance} miles\n"
-    print(plan_output)
+    for vehicle in range(num_vehicles):
+        index = routing.Start(vehicle)
+        plan_output = f"Route for vehicle {vehicle}:\n"
+        route_distance = 0
+        while not routing.IsEnd(index):
+            plan_output += f" {manager.IndexToNode(index)} ->"
+            previous_index = index
+            index = solution.Value(routing.NextVar(index))
+            route_distance += routing.GetArcCostForVehicle(
+                previous_index, index, vehicle
+            )
+        plan_output += f" {manager.IndexToNode(index)}\n"
+        plan_output += f"Route distance: {route_distance} miles\n"
+        print(plan_output)
+
+
+def parse_output(
+    # manager: pywrapcp.RoutingIndexManager,
+    # routing: pywrapcp.RoutingModel,
+    # solution: pywrapcp.RoutingModel,
+    # num_vehicles: int,
+) -> OutputDataModel:
+    """Parses solution into object"""
+    return OutputDataModel([0], 0)
 
 
 def main() -> None:
@@ -80,6 +102,18 @@ def main() -> None:
     # Define cost of each arc.
     routing.SetArcCostEvaluatorOfAllVehicles(transit_callback_index)
 
+    # Add Distance constraint.
+    dimension_name = "Distance"
+    routing.AddDimension(
+        transit_callback_index,
+        0,  # no slack
+        6000,  # vehicle maximum travel distance
+        True,  # start cumul to zero
+        dimension_name,
+    )
+    distance_dimension = routing.GetDimensionOrDie(dimension_name)
+    distance_dimension.SetGlobalSpanCostCoefficient(100)
+
     # Setting first solution heuristic.
     search_parameters = pywrapcp.DefaultRoutingSearchParameters()
     search_parameters.first_solution_strategy = (
@@ -90,8 +124,10 @@ def main() -> None:
     solution = routing.SolveWithParameters(search_parameters)
 
     # Print solution on console.
-    if solution:
-        print_solution(manager, routing, solution)
+    if solution is not None:
+        print_solution(manager, routing, solution, data.num_vehicles)
+    else:
+        print("no solution")
 
 
 if __name__ == "__main__":
