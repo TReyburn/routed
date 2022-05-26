@@ -58,7 +58,10 @@ def default_constraints() -> RouteConstraints:
     return RouteConstraints("Distance", 0, 5500)
 
 
-def create_route(data: InputDataModel, constraints: RouteConstraints) -> list[OutputDataModel]:
+def create_route(
+    data: InputDataModel,
+    constraints: RouteConstraints,
+) -> list[OutputDataModel]:
     """creates the route solution given the input"""
     # Create the routing index manager
     manager = pywrapcp.RoutingIndexManager(
