@@ -1,34 +1,8 @@
-"""Simple Travelling Salesperson Problem (TSP) between cities"""
-from dataclasses import dataclass
-
+"""Solves vehicle routing problems given a distance matrix and associated constraints"""
 from ortools.constraint_solver import pywrapcp, routing_enums_pb2  # type: ignore
 
-
-@dataclass
-class InputDataModel:
-    """InputDataModel"""
-
-    distance_matrix: list[list[int]]
-    num_vehicles: int
-    depot_position: int
-
-
-@dataclass
-class OutputDataModel:
-    """OutputDataModel"""
-
-    path: list[int]
-    distance: int
-
-
-@dataclass
-class RouteConstraints:
-    """RouteConstraints"""
-
-    name: str
-    slack: int
-    capacity: int
-    fixed_start: bool = True
+from src.route.consts import __default_timeout__
+from src.route.models import InputDataModel, OutputDataModel, RouteConstraints
 
 
 def create_data_model() -> InputDataModel:
@@ -86,9 +60,9 @@ def create_route(
     # Add Distance constraint
     routing.AddDimension(
         transit_callback_index,
-        constraints.slack,  # no slack
-        constraints.capacity,  # vehicle maximum travel distance
-        constraints.fixed_start,  # fixed start cumulative to zero
+        constraints.slack,
+        constraints.capacity,
+        constraints.fixed_start,
         constraints.name,
     )
     distance_dimension = routing.GetDimensionOrDie(constraints.name)
@@ -99,6 +73,9 @@ def create_route(
     search_parameters.first_solution_strategy = (
         routing_enums_pb2.FirstSolutionStrategy.PATH_CHEAPEST_ARC  # pylint: disable=E1101
     )
+
+    # Set time limit
+    search_parameters.time_limit.FromSeconds(__default_timeout__)
 
     # Solve the problem
     solution = routing.SolveWithParameters(search_parameters)
