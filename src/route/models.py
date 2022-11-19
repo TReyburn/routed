@@ -23,6 +23,7 @@ class OutputDataModel:
 class RouteConstraints:
     """RouteConstraints"""
 
+    # TODO: Name should be an enum of valid names
     name: str
     slack: int
     capacity: int
