@@ -1,7 +1,7 @@
 """Solves vehicle routing problems given a distance matrix and associated constraints"""
 from ortools.constraint_solver import pywrapcp, routing_enums_pb2  # type: ignore
 
-from src.route.consts import __default_timeout__
+from src.route.consts import DEFAULT_TIMEOUT
 from src.route.models import InputDataModel, OutputDataModel, RouteConstraints
 
 
@@ -50,7 +50,7 @@ def create_route(
     )
 
     # Set time limit
-    search_parameters.time_limit.FromSeconds(__default_timeout__)
+    search_parameters.time_limit.FromSeconds(DEFAULT_TIMEOUT)
 
     # Solve the problem
     solution = routing.SolveWithParameters(search_parameters)

@@ -1,3 +1,4 @@
 """Routing module constants"""
 
-__default_timeout__: int = 30
+# In seconds
+DEFAULT_TIMEOUT: int = 30
