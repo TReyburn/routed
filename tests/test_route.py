@@ -1,5 +1,6 @@
 """Tests for Route module"""
 import pytest
+
 from src.route.models import InputDataModel, OutputDataModel, RouteConstraints
 from src.route.route import create_route
 
