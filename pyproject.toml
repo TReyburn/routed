@@ -36,5 +36,12 @@ exclude = '''
 )/
 '''
 
+# Useful example of pylint configs
+# https://github.com/atlassian-api/atlassian-python-api/blob/master/pyproject.toml
 [tool.pylint.format]
 max-line-length = "120"
+
+[tool.pylint."MESSAGE CONTROL"]
+disable = '''
+    W0511,
+'''
