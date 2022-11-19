@@ -27,3 +27,6 @@ jobs:
     - name: Static Analysis with pylint
       run: |
         pylint src
+    - name: Tests
+      run: |
+        pytest tests/
