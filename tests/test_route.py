@@ -1,6 +1,5 @@
 """Tests for Route module"""
 import pytest
-
 from src.route.models import InputDataModel, OutputDataModel, RouteConstraints
 from src.route.route import create_route
 
@@ -64,4 +63,4 @@ def test_create_route_invalid(
 
 def test_create_route_mokeypatching() -> None:
     # TODO: Implement monkeypatching so we can actually unit test create route
-    return
+    assert False is True
