@@ -40,11 +40,11 @@ freeze-dev:
 # lint
 .PHONY: black
 black:
-	$(PYTHON) -m black ./src
+	$(PYTHON) -m black ./src ./tests
 
 .PHONY: isort
 isort:
-	$(PYTHON) -m isort ./src
+	$(PYTHON) -m isort ./src ./tests
 
 .PHONY: mypy
 mypy:
@@ -58,7 +58,7 @@ pylint:
 # test
 .PHONY: test
 test:
-	echo "forgot to implement testing"
+	$(PYTHON) -m pytest ./tests/
 
 
 # handling environment

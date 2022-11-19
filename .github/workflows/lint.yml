@@ -17,13 +17,16 @@ jobs:
         pip install -r requirements.txt
     - name: Format checking with black
       run: |
-        black --check src
+        black --check src tests
     - name: Sorting imports with isort
       run: |
-        isort --check-only src
+        isort --check-only src tests
     - name: Type checking with mypy
       run: |
         mypy src
     - name: Static Analysis with pylint
       run: |
         pylint src
+    - name: Tests
+      run: |
+        pytest tests/
